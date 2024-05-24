@@ -18,7 +18,7 @@ php artisan blitzy:generate "App\Http\Controllers\PostController" --type=smoke
 
 ## Configuration
 ```bash
-php artisan vendor:publish --provider="Danon910\blitzy\BlitzyServiceProvider"
+php artisan vendor:publish --provider="Danon910\blitzy\Providers\BlitzyProvider"
 ```
 Blitzy is ready to use out of the box, but if you want to customize its behavior, you can edit the configuration file located at `config/blitzy.php`.
 
