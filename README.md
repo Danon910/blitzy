@@ -4,7 +4,7 @@ Blitzy is a lightweight package for Laravel that automates test generation. It i
 
 ## Installation
 ```bash
-composer require Danon910/blitzy
+composer require danon910/blitzy
 ```
 
 ## What does the package do?
