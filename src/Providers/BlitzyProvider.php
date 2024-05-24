@@ -21,8 +21,8 @@ class BlitzyProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/blitzie.php',
-            'blitzie'
+            __DIR__.'/../config/blitzy.php',
+            'blitzy'
         );
     }
 }

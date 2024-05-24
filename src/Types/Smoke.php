@@ -52,12 +52,12 @@ class Smoke extends BaseTestService implements ITestType
 
     public function build(): IResult
     {
-        $blitzie = config('blitzie');
+        $blitzy = config('blitzy');
 
-        $cases = $blitzie['types']['smoke']['cases'] ?? [];
-        $traits = $blitzie['types']['smoke']['traits'] ?? [];
-        $generate_fsc = $blitzie['types']['smoke']['generate_fsc'] ?? false;
-        $only_methods = $blitzie['types']['smoke']['only_methods'] ?? [];
+        $cases = $blitzy['types']['smoke']['cases'] ?? [];
+        $traits = $blitzy['types']['smoke']['traits'] ?? [];
+        $generate_fsc = $blitzy['types']['smoke']['generate_fsc'] ?? false;
+        $only_methods = $blitzy['types']['smoke']['only_methods'] ?? [];
 
         $reflection_class = new ReflectionClass($this->path);
 
