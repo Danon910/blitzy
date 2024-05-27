@@ -3,8 +3,14 @@
 Blitzy is a lightweight package for Laravel that automates test generation. It is designed to speed up the testing process and make developers' lives easier. This is the very first version of this package, and improvements will be implemented soon.
 
 ## Installation
+### 1. Install package using composer
 ```bash
 composer require danon910/blitzy
+```
+
+### 2. Add the ServiceProvider in `config/app.php`
+```php
+\Danon910\blitzy\Providers\BlitzyProvider::class,
 ```
 
 ## What does the package do?
