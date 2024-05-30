@@ -11,6 +11,10 @@ class BlitzyProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        $this->publishes([
+            __DIR__.'/../config/blitzy.php' => config_path('blitzy.php')
+        ], 'courier-config');
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 GenerateTestCommand::class,
