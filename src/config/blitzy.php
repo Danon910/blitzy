@@ -6,6 +6,8 @@ use Danon910\blitzy\Enums\TestAssertion;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 return [
+    'docs_path' => 'api-docs/api-docs.json',
+
     'types' => [
         'smoke' => [
             'traits' => [

@@ -33,11 +33,15 @@ abstract class BaseTestService
         foreach ($items as $item) {
             if ($item instanceof TestAssertion) {
                 $mapped_items[] = $item->content();
-            } elseif ($item instanceof BackedEnum) {
-                $mapped_items[] = $item->value;
-            } else {
-                $mapped_items[] = $item;
+                continue;
             }
+
+            if ($item instanceof BackedEnum) {
+                $mapped_items[] = $item->value;
+                continue;
+            }
+
+            $mapped_items[] = $item;
         }
 
         return $mapped_items;

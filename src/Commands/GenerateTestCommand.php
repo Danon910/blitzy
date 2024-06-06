@@ -11,7 +11,7 @@ use Danon910\blitzy\Factories\BuildTestServiceFactory;
 
 class GenerateTestCommand extends Command
 {
-    protected $signature = 'blitzy:generate {path} {--type=} {feature=TODO}';
+    protected $signature = 'blitzy:generate {path} {--type=} {--feature=TODO}';
     protected $description = 'Generate smoke test template for specific path.';
 
     public function handle(): int
@@ -31,12 +31,14 @@ class GenerateTestCommand extends Command
         $type = TestType::from(mb_strtolower($type));
 
         $path = $this->argument('path');
-        $feature = $this->argument('feature');
+        $feature = $this->option('feature');
 
         $start_time = microtime(true);
 
         try {
-            $test_service = BuildTestServiceFactory::create($path, $type, $feature);
+            /** @var BuildTestServiceFactory $factory */
+            $factory = app()->make(BuildTestServiceFactory::class);
+            $test_service = $factory->create($path, $type, $feature);
             $generated_test_result = $test_service->build();
 
             if ($generated_test_result->isSuccess()) {
@@ -60,6 +62,7 @@ class GenerateTestCommand extends Command
         } catch (Throwable $exception) {
             $this->error('Fatal Error occurred!');
             $this->error($exception->getMessage());
+            $this->error($exception->getTraceAsString());
         }
 
         return 1;

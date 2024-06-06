@@ -10,12 +10,13 @@ use Danon910\blitzy\Components\BaseComponent;
 
 class TestClass extends BaseComponent
 {
+    private array $imports = [];
+    private array $traits = [];
+    private array $methods = [];
+
     public function __construct(
         private readonly string $namespace,
         private readonly string $name,
-        private readonly array $imports,
-        private readonly array $traits,
-        private readonly array $methods,
     )
     {
     }
@@ -23,12 +24,24 @@ class TestClass extends BaseComponent
     public static function make(
         string $namespace,
         string $name,
-        array $imports = [],
-        array $traits = [],
-        array $methods = [],
     ): self
     {
-        return new self($namespace, $name, $imports, $traits, $methods);
+        return new self($namespace, $name);
+    }
+
+    public function setImports(array $imports): void
+    {
+        $this->imports = $imports;
+    }
+
+    public function setTraits(array $traits): void
+    {
+        $this->traits = $traits;
+    }
+
+    public function setMethods(array $methods): void
+    {
+        $this->methods = $methods;
     }
 
     public function getAttributes(): array
