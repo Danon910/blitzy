@@ -11,7 +11,7 @@ use Danon910\blitzy\Factories\BuildTestServiceFactory;
 
 class GenerateTestCommand extends Command
 {
-    protected $signature = 'blitzy:generate {path} {--type=} {--feature=TODO}';
+    protected $signature = 'blitzy:generate {path} {--type=} {--feature=TODO} {--methods=}';
     protected $description = 'Generate smoke test template for specific path.';
 
     public function handle(): int
@@ -23,6 +23,7 @@ class GenerateTestCommand extends Command
                 'What type of test you want to generate?',
                 [
                     TestType::SMOKE->value => TestType::SMOKE->label(),
+                    TestType::INTEGRATION->value => TestType::INTEGRATION->label(),
                 ],
                 TestType::SMOKE->value
             );
@@ -32,13 +33,14 @@ class GenerateTestCommand extends Command
 
         $path = $this->argument('path');
         $feature = $this->option('feature');
+        $methods = $this->getValues($this->option('methods'));
 
         $start_time = microtime(true);
 
         try {
             /** @var BuildTestServiceFactory $factory */
             $factory = app()->make(BuildTestServiceFactory::class);
-            $test_service = $factory->create($path, $type, $feature);
+            $test_service = $factory->create($path, $type, $feature, $methods);
             $generated_test_result = $test_service->build();
 
             if ($generated_test_result->isSuccess()) {
@@ -66,5 +68,14 @@ class GenerateTestCommand extends Command
         }
 
         return 1;
+    }
+
+    private function getValues(string|array|bool|null $value): array
+    {
+        if (is_null($value)) {
+            return [];
+        }
+
+        return explode(',', $value);
     }
 }

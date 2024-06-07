@@ -7,6 +7,7 @@ namespace Danon910\blitzy\Factories;
 use Exception;
 use Danon910\blitzy\Types\Smoke;
 use Danon910\blitzy\Enums\TestType;
+use Danon910\blitzy\Types\Integration;
 use Danon910\blitzy\Contracts\ITestType;
 use Illuminate\Contracts\Foundation\Application;
 
@@ -18,12 +19,25 @@ class BuildTestServiceFactory
     {
     }
 
-    public function create(string $path, TestType $type, string $feature): ITestType
+    public function create(
+        string $path,
+        TestType $type,
+        string $feature,
+        array $methods,
+    ): ITestType
     {
         if ($type === TestType::SMOKE) {
             return $this->app->make(Smoke::class, [
                 'path' => $path,
                 'feature' => $feature,
+            ]);
+        }
+
+        if ($type === TestType::INTEGRATION) {
+            return $this->app->make(Integration::class, [
+                'path' => $path,
+                'feature' => $feature,
+                'methods' => $methods,
             ]);
         }
 

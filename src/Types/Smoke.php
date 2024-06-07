@@ -22,7 +22,7 @@ use Danon910\blitzy\Components\Method\Method;
 use Danon910\blitzy\Components\TestTrait\TestTrait;
 use Danon910\blitzy\Components\TestClass\TestClass;
 use Danon910\blitzy\Components\TestMethod\TestMethod;
-use Danon910\blitzy\Components\RequestJson\RequestJson;
+use Danon910\blitzy\Components\AppMake\RequestJson;
 use Danon910\blitzy\Components\VariableValue\VariableValue;
 
 class Smoke extends BaseTestService implements ITestType
