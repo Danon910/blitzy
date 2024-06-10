@@ -65,7 +65,7 @@ class TestMethod extends BaseComponent
         $name_parts = [
             Str::camel($this->method),
             Str::camel($this->case),
-            Str::camel($this->expectation),
+            Str::of($this->expectation)->lower()->camel(),
         ];
 
         return [

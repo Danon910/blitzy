@@ -17,7 +17,6 @@ use Danon910\blitzy\Entities\TestTypeCase;
 use Danon910\blitzy\Entities\SuccessResult;
 use Danon910\blitzy\Entities\TestTypeConfig;
 use Danon910\blitzy\Components\Method\Method;
-use Danon910\blitzy\Components\AppMake\AppMake;
 use Danon910\blitzy\Components\TestTrait\TestTrait;
 use Danon910\blitzy\Components\TestClass\TestClass;
 use Danon910\blitzy\Components\TestMethod\TestMethod;
@@ -63,10 +62,10 @@ class Integration extends BaseTestService implements ITestType
     protected function generateTest(
         string $namespace,
         array $cases,
-        string $parsed_class_path,
         string $parsed_class_name,
         string $method_name,
         array $traits,
+        ReflectionMethod $class_method,
     ): string
     {
         $test_methods = [];
@@ -78,7 +77,25 @@ class Integration extends BaseTestService implements ITestType
             $when = $this->mapEnums($case->getWhen());
             $then = $this->mapEnums($case->getThen());
 
-            $when[] = VariableValue::make('result', "\$this->getTestedClass()->{$method_name}()")->render();
+            $given[] = VariableValue::make('properties', '[]')->render();
+
+            $method_parameters_name = [];
+
+            foreach ($class_method->getParameters() as $parameter) {
+                $value = match($parameter->getType()->getName())
+                {
+                    'int' => 1,
+                    'bool' => 'true',
+                    'array' => '[]',
+                    default => '"TODO"',
+                };
+
+                $method_parameters_name[] = '$' . $parameter->getName();
+                $given[] = VariableValue::make($parameter->getName(), $value)->render();
+            }
+
+            $method_parameters_merged = implode(', ', $method_parameters_name);
+            $when[] = VariableValue::make('result', "\$this->getTestedClass(\$properties)->{$method_name}({$method_parameters_merged})")->render();
 
             // Generate test method
             $test_method = TestMethod::make($method_name, $case->getCase(), $case->getExpectation());
@@ -130,7 +147,7 @@ class Integration extends BaseTestService implements ITestType
             $generated_test_paths[] = $trait_file_path;
 
             // Test
-            $test_content = $this->generateTest($namespace, $cases, $parsed_class->getPath(), $parsed_class->getName(), $class_method->getName(), $traits);
+            $test_content = $this->generateTest($namespace, $cases, $parsed_class->getName(), $class_method->getName(), $traits, $class_method);
             $test_file_path = $this->saveFile($namespace, $parsed_class->getName() . 'Test', $test_content);
             $generated_test_paths[] = $test_file_path;
         }

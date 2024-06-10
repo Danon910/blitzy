@@ -14,7 +14,7 @@ return [
                 DatabaseTransactions::class,
             ],
             'generate_fsc' => true,
-            'only_methods' => ['index'], // Leave it empty if you want any method
+            'only_methods' => [], // Leave it empty if you want any method
             'cases' => [
                 [
                     'case' => 'Happy path',
