@@ -10,14 +10,14 @@ use Danon910\blitzy\Entities\TestTypeConfig;
 
 class BlitzyConfig
 {
-    public function getDocsPath(): ?string
+    public function getTestsFolderPath(): string
     {
-        return $this->getConfig('docs_path');
+        return $this->getConfig(['tests_folder_path'], 'tests');
     }
 
     public function getType(TestType $name): TestTypeConfig
     {
-        $type_config = $this->getConfig('types', $name->value);
+        $type_config = $this->getConfig(['types', $name->value]);
 
         $parsed_cases = [];
 
@@ -40,10 +40,10 @@ class BlitzyConfig
         );
     }
 
-    private function getConfig(...$keys): mixed
+    private function getConfig(array $keys, mixed $default = null): mixed
     {
         $keys_merged = implode('.', $keys);
 
-        return config("blitzy.{$keys_merged}");
+        return config("blitzy.{$keys_merged}", $default);
     }
 }

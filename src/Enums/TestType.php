@@ -19,4 +19,13 @@ enum TestType: string
             self::UNIT => 'Unit',
         };
     }
+
+    public static function available(): array
+    {
+        return [
+            self::SMOKE->value,
+            self::INTEGRATION->value,
+            self::UNIT->value,
+        ];
+    }
 }

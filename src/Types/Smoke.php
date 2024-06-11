@@ -22,24 +22,28 @@ use Danon910\blitzy\Components\Method\Method;
 use Danon910\blitzy\Components\TestTrait\TestTrait;
 use Danon910\blitzy\Components\TestClass\TestClass;
 use Danon910\blitzy\Components\TestMethod\TestMethod;
-use Danon910\blitzy\Components\AppMake\RequestJson;
+use Danon910\blitzy\Components\RequestJson\RequestJson;
 use Danon910\blitzy\Components\VariableValue\VariableValue;
 
 class Smoke extends BaseTestService implements ITestType
 {
     protected Generator $faker;
-    protected TestTypeConfig $smoke_test_config;
+    protected TestTypeConfig $test_config;
 
     public function __construct(
-        protected readonly BlitzyConfig $blitzy_config,
+        BlitzyConfig $blitzy_config,
         protected readonly ClassParser $class_parser,
         protected readonly RouteFinder $route_finder,
         protected readonly string $path,
         protected readonly string $feature,
+        protected readonly array $methods = [],
+        protected readonly bool $force = false,
     )
     {
+        parent::__construct($blitzy_config);
+
         $this->faker = Factory::create();
-        $this->smoke_test_config = $this->blitzy_config->getType(TestType::SMOKE);
+        $this->test_config = $this->blitzy_config->getType(TestType::SMOKE);
     }
 
     protected function guessHttpMethod(string $method_name): HttpMethod
@@ -208,7 +212,7 @@ class Smoke extends BaseTestService implements ITestType
             $test_method->setWhen($when);
             $test_method->setThen($then);
 
-            if ($this->smoke_test_config->generateFsc()) {
+            if ($this->test_config->generateFsc()) {
                 $test_method->addAnnotations([
                     'expectation' => $case->getExpectation(),
                 ]);
@@ -232,9 +236,9 @@ class Smoke extends BaseTestService implements ITestType
 
     public function build(): IResult
     {
-        $cases = $this->smoke_test_config->getCases();
-        $traits = $this->smoke_test_config->getTraits();
-        $only_methods = $this->smoke_test_config->getOnlyMethods();
+        $cases = $this->test_config->getCases();
+        $traits = $this->test_config->getTraits();
+        $only_methods = $this->methods ?? $this->test_config->getOnlyMethods();
 
         $parsed_class = $this->class_parser->parse($this->path);
         $class_methods = $parsed_class->getMethods($only_methods);
@@ -245,15 +249,25 @@ class Smoke extends BaseTestService implements ITestType
         foreach ($class_methods as $class_method) {
             $namespace = sprintf("Smoke\\%s\\%s", $parsed_class->getPath(), Str::studly($class_method->getName()));
 
-            // Trait
-            $trait_content = $this->generateTrait($namespace, $parsed_class->getName());
-            $trait_file_path = $this->saveFile($namespace, $parsed_class->getName() . 'Trait', $trait_content);
-            $generated_test_paths[] = $trait_file_path;
-
             // Test
             $test_content = $this->generateTest($namespace, $cases, $parsed_class->getPath(), $parsed_class->getName(), $class_method->getName(), $traits);
-            $test_file_path = $this->saveFile($namespace, $parsed_class->getName() . 'Test', $test_content);
-            $generated_test_paths[] = $test_file_path;
+            $save_test_status = $this->saveFile($namespace, $parsed_class->getName() . 'Test', $test_content, $this->force);
+
+            if ($save_test_status->isSuccess()) {
+                $generated_test_paths = array_merge($generated_test_paths, $save_test_status->getPaths());
+            } else {
+                return $save_test_status;
+            }
+
+            // Trait
+            $trait_content = $this->generateTrait($namespace, $parsed_class->getName());
+            $save_trait_status = $this->saveFile($namespace, $parsed_class->getName() . 'Trait', $trait_content, $this->force);
+
+            if ($save_trait_status->isSuccess()) {
+                $generated_test_paths = array_merge($generated_test_paths, $save_trait_status->getPaths());
+            } else {
+                return $save_trait_status;
+            }
         }
 
         return new SuccessResult('Smoke tests generated successfully!', $generated_test_paths);

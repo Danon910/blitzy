@@ -24,20 +24,21 @@ class BuildTestServiceFactory
         TestType $type,
         string $feature,
         array $methods,
+        bool $force,
     ): ITestType
     {
-        if ($type === TestType::SMOKE) {
-            return $this->app->make(Smoke::class, [
-                'path' => $path,
-                'feature' => $feature,
-            ]);
-        }
+        $test_type = match($type) {
+            TestType::SMOKE => Smoke::class,
+            TestType::INTEGRATION => Integration::class,
+            TestType::UNIT => throw new \Exception('To be implemented'),
+        };
 
-        if ($type === TestType::INTEGRATION) {
-            return $this->app->make(Integration::class, [
+        if ($test_type) {
+            return $this->app->make($test_type, [
                 'path' => $path,
                 'feature' => $feature,
                 'methods' => $methods,
+                'force' => $force,
             ]);
         }
 

@@ -28,13 +28,16 @@ class Integration extends BaseTestService implements ITestType
     protected TestTypeConfig $test_config;
 
     public function __construct(
-        protected readonly BlitzyConfig $blitzy_config,
+        BlitzyConfig $blitzy_config,
         protected readonly ClassParser $class_parser,
         protected readonly string $path,
         protected readonly string $feature,
         protected readonly array $methods = [],
+        protected readonly bool $force = false,
     )
     {
+        parent::__construct($blitzy_config);
+
         $this->faker = Factory::create();
         $this->test_config = $this->blitzy_config->getType(TestType::INTEGRATION);
     }
@@ -141,15 +144,25 @@ class Integration extends BaseTestService implements ITestType
         foreach ($class_methods as $class_method) {
             $namespace = sprintf("Integration\\%s\\%s", $parsed_class->getPath(), Str::studly($class_method->getName()));
 
-            // Trait
-            $trait_content = $this->generateTrait($namespace, $parsed_class->getPath(), $parsed_class->getName());
-            $trait_file_path = $this->saveFile($namespace, $parsed_class->getName() . 'Trait', $trait_content);
-            $generated_test_paths[] = $trait_file_path;
-
             // Test
             $test_content = $this->generateTest($namespace, $cases, $parsed_class->getName(), $class_method->getName(), $traits, $class_method);
-            $test_file_path = $this->saveFile($namespace, $parsed_class->getName() . 'Test', $test_content);
-            $generated_test_paths[] = $test_file_path;
+            $save_test_status = $this->saveFile($namespace, $parsed_class->getName() . 'Test', $test_content, $this->force);
+
+            if ($save_test_status->isSuccess()) {
+                $generated_test_paths = array_merge($generated_test_paths, $save_test_status->getPaths());
+            } else {
+                return $save_test_status;
+            }
+
+            // Trait
+            $trait_content = $this->generateTrait($namespace, $parsed_class->getPath(), $parsed_class->getName());
+            $save_trait_status = $this->saveFile($namespace, $parsed_class->getName() . 'Trait', $trait_content, $this->force);
+
+            if ($save_trait_status->isSuccess()) {
+                $generated_test_paths = array_merge($generated_test_paths, $save_trait_status->getPaths());
+            } else {
+                return $save_trait_status;
+            }
         }
 
         return new SuccessResult('Integration tests generated successfully!', $generated_test_paths);
