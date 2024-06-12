@@ -95,5 +95,30 @@ return [
                 ],
             ],
         ],
+        'unit' => [
+            'traits' => [
+                DatabaseTransactions::class,
+            ],
+            'generate_fsc' => true,
+            'only_methods' => [], // Leave it empty if you want any method
+            'cases' => [
+                [
+                    'case' => 'Happy path',
+                    'expectation' => 'TODO',
+                    'before_given' => [
+                        //
+                    ],
+                    'given' => [
+                        //
+                    ],
+                    'when' => [
+                        //
+                    ],
+                    'then' => [
+                        TestHelper::TODO->message(),
+                    ],
+                ],
+            ],
+        ],
     ],
 ];

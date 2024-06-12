@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Danon910\blitzy\Factories;
 
 use Exception;
+use Danon910\blitzy\Types\Unit;
 use Danon910\blitzy\Types\Smoke;
 use Danon910\blitzy\Enums\TestType;
 use Danon910\blitzy\Types\Integration;
@@ -30,7 +31,7 @@ class BuildTestServiceFactory
         $test_type = match($type) {
             TestType::SMOKE => Smoke::class,
             TestType::INTEGRATION => Integration::class,
-            TestType::UNIT => throw new \Exception('To be implemented'),
+            TestType::UNIT => Unit::class,
         };
 
         if ($test_type) {

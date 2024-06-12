@@ -24,7 +24,7 @@ use Danon910\blitzy\Components\TestClass\TestClass;
 use Danon910\blitzy\Components\TestMethod\TestMethod;
 use Danon910\blitzy\Components\VariableValue\VariableValue;
 
-class Integration extends BaseTestService implements ITestType
+class Unit extends BaseTestService implements ITestType
 {
     protected Generator $faker;
     protected TestTypeConfig $test_config;
@@ -41,7 +41,7 @@ class Integration extends BaseTestService implements ITestType
         parent::__construct($blitzy_config);
 
         $this->faker = Factory::create();
-        $this->test_config = $this->blitzy_config->getType(TestType::INTEGRATION);
+        $this->test_config = $this->blitzy_config->getType(TestType::UNIT);
     }
 
     protected function generateTrait(
@@ -157,7 +157,7 @@ class Integration extends BaseTestService implements ITestType
 
         /** @var ReflectionMethod $class_method */
         foreach ($class_methods as $class_method) {
-            $namespace = sprintf("Integration\\%s\\%s", $parsed_class->getPath(), Str::studly($class_method->getName()));
+            $namespace = sprintf("Unit\\%s\\%s", $parsed_class->getPath(), Str::studly($class_method->getName()));
 
             // Test
             $test_content = $this->generateTest($namespace, $cases, $parsed_class->getName(), $class_method->getName(), $traits, $class_method);
