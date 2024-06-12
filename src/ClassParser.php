@@ -36,16 +36,14 @@ class ClassParser
 
     public function getMethods(array $only = []): array
     {
-        if (filled($only)) {
-            return Collection::make($this->methods)
-                ->filter(fn(ReflectionMethod $method) => $method->class === $this->path)
-                ->filter(function (ReflectionMethod $method) use ($only) {
-                    return in_array($method->name, $only);
-                })
-                ->toArray()
-            ;
-        }
-
-        return $this->methods;
+        return Collection::make($this->methods)
+            ->filter(function (ReflectionMethod $method) {
+                return $method->class === $this->path;
+            })
+            ->when(filled($only), function (Collection $collection) use ($only) {
+                return $collection->filter(fn(ReflectionMethod $method) => in_array($method->name, $only));
+            })
+            ->toArray()
+        ;
     }
 }
