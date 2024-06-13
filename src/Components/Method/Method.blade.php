@@ -5,8 +5,8 @@
     }
 @else
     {{ $visibility }} function {{ $name }}(
-    @foreach ($parameters as $parameter)
-        {{ $parameter }}
+    @foreach ($parameters as $var => $parameter)
+    {{ $var }} ${{ $parameter }},
     @endforeach
 ): {{ $type }}
     {

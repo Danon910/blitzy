@@ -12,9 +12,4 @@ class FailResult extends BaseResult implements IResult
     {
         return false;
     }
-
-    public function getPaths(): array
-    {
-        return [];
-    }
 }

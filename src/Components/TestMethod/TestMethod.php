@@ -9,43 +9,55 @@ use Danon910\blitzy\Components\BaseComponent;
 
 class TestMethod extends BaseComponent
 {
+    private array $before_given = [];
+    private array $given = [];
+    private array $when = [];
+    private array $then = [];
     private array $annotations = [];
 
     public function __construct(
         private readonly string $method,
         private readonly string $case,
         private readonly string $expectation,
-        private readonly array $before_given,
-        private readonly array $given,
-        private readonly array $when,
-        private readonly array $then,
     )
     {
+        $this->annotations = [
+            'test' => null,
+        ];
     }
 
     public static function make(
         string $method,
         string $case,
         string $expectation,
-        array $before_given,
-        array $given,
-        array $when,
-        array $then,
     ): self
     {
-        return new self($method, $case, $expectation, $before_given, $given, $when, $then);
+        return new self($method, $case, $expectation);
     }
 
-    public function setAnnotations(array $annotations): self
+    public function setBeforeGiven(array $before_given): void
     {
-        $this->annotations = $annotations;
+        $this->before_given = $before_given;
+    }
 
-        return $this;
+    public function setGiven(array $given): void
+    {
+        $this->given = $given;
+    }
+
+    public function setWhen(array $when): void
+    {
+        $this->when = $when;
+    }
+
+    public function setThen(array $then): void
+    {
+        $this->then = $then;
     }
 
     public function addAnnotations(array $annotation): void
     {
-        $this->annotations = array_merge($this->annotations, $annotation);
+        $this->annotations = array_merge($annotation, [null], $this->annotations);
     }
 
     public function getAttributes(): array
@@ -53,7 +65,7 @@ class TestMethod extends BaseComponent
         $name_parts = [
             Str::camel($this->method),
             Str::camel($this->case),
-            Str::camel($this->expectation),
+            Str::of($this->expectation)->lower()->camel(),
         ];
 
         return [

@@ -5,16 +5,42 @@ declare(strict_types=1);
 namespace Danon910\blitzy\Factories;
 
 use Exception;
+use Danon910\blitzy\Types\Unit;
 use Danon910\blitzy\Types\Smoke;
 use Danon910\blitzy\Enums\TestType;
+use Danon910\blitzy\Types\Integration;
 use Danon910\blitzy\Contracts\ITestType;
+use Illuminate\Contracts\Foundation\Application;
 
 class BuildTestServiceFactory
 {
-    public static function create(string $path, TestType $type, string $feature): ITestType
+    public function __construct(
+        protected readonly Application $app,
+    )
     {
-        if ($type === TestType::SMOKE) {
-            return new Smoke($path, $feature);
+    }
+
+    public function create(
+        string $path,
+        TestType $type,
+        string $feature,
+        array $methods,
+        bool $force,
+    ): ITestType
+    {
+        $test_type = match($type) {
+            TestType::SMOKE => Smoke::class,
+            TestType::INTEGRATION => Integration::class,
+            TestType::UNIT => Unit::class,
+        };
+
+        if ($test_type) {
+            return $this->app->make($test_type, [
+                'path' => $path,
+                'feature' => $feature,
+                'methods' => $methods,
+                'force' => $force,
+            ]);
         }
 
         throw new Exception('Not found service.');

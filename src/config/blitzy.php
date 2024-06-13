@@ -12,7 +12,7 @@ return [
                 DatabaseTransactions::class,
             ],
             'generate_fsc' => true,
-            'only_methods' => ['index'], // Leave it empty if you want any method
+            'only_methods' => [], // Leave it empty if you want any method
             'cases' => [
                 [
                     'case' => 'Happy path',
@@ -64,6 +64,56 @@ return [
                     ],
                     'then' => [
                         TestAssertion::RESPONSE_UNAUTHORIZED,
+                    ],
+                ],
+            ],
+        ],
+        'integration' => [
+            'traits' => [
+                DatabaseTransactions::class,
+            ],
+            'generate_fsc' => true,
+            'only_methods' => [], // Leave it empty if you want any method
+            'cases' => [
+                [
+                    'case' => 'Happy path',
+                    'expectation' => 'TODO',
+                    'before_given' => [
+                        //
+                    ],
+                    'given' => [
+                        //
+                    ],
+                    'when' => [
+                        //
+                    ],
+                    'then' => [
+                        TestHelper::TODO->message(),
+                    ],
+                ],
+            ],
+        ],
+        'unit' => [
+            'traits' => [
+                DatabaseTransactions::class,
+            ],
+            'generate_fsc' => true,
+            'only_methods' => [], // Leave it empty if you want any method
+            'cases' => [
+                [
+                    'case' => 'Happy path',
+                    'expectation' => 'TODO',
+                    'before_given' => [
+                        //
+                    ],
+                    'given' => [
+                        //
+                    ],
+                    'when' => [
+                        //
+                    ],
+                    'then' => [
+                        TestHelper::TODO->message(),
                     ],
                 ],
             ],

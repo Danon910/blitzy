@@ -8,6 +8,7 @@ abstract class BaseResult
 {
     public function __construct(
         private readonly ?string $message = null,
+        private readonly array $paths = [],
     )
     {
     }
@@ -15,6 +16,11 @@ abstract class BaseResult
     public function getMessage(): string
     {
         return $this->message;
+    }
+
+    public function getPaths(): array
+    {
+        return $this->paths;
     }
 
     abstract public function isSuccess(): bool;

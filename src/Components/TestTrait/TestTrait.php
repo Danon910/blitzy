@@ -9,6 +9,8 @@ use Danon910\blitzy\Components\BaseComponent;
 
 class TestTrait extends BaseComponent
 {
+    private array $imports = [];
+
     public function __construct(
         private readonly string $namespace,
         private readonly string $name,
@@ -26,12 +28,18 @@ class TestTrait extends BaseComponent
         return new self($namespace, $name, $methods);
     }
 
+    public function setImports(array $imports): void
+    {
+        $this->imports = $imports;
+    }
+
     public function getAttributes(): array
     {
         return [
             'namespace' => Str::studly($this->namespace),
             'name' => Str::studly($this->name),
             'methods' => $this->methods,
+            'imports' => $this->imports,
         ];
     }
 }
