@@ -12,7 +12,7 @@ enum TestHelper: string
     {
         return match($this)
         {
-            self::TODO => '// TODO: ' . $message,
+            self::TODO => empty($message) ? '// TODO' : '// TODO: ' . $message,
         };
     }
 }

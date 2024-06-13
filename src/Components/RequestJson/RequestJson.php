@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Danon910\blitzy\Components\RequestJson;
 
+use Danon910\blitzy\Enums\HttpMethod;
 use Danon910\blitzy\Components\BaseComponent;
 
 class RequestJson extends BaseComponent
@@ -11,10 +12,13 @@ class RequestJson extends BaseComponent
     private static bool $has_data = false;
 
     public function __construct(
-        private readonly string $method,
+        private readonly HttpMethod $method,
         private readonly string $route,
     )
     {
+        if (in_array($method, [HttpMethod::POST, HttpMethod::PUT, HttpMethod::DELETE])) {
+            self::$has_data = true;
+        }
     }
 
     public static function make(
@@ -22,9 +26,8 @@ class RequestJson extends BaseComponent
         string $route,
     ): self
     {
-        if (in_array(mb_strtolower($method), ['post', 'put', 'delete'])) {
-            self::$has_data = true;
-        }
+        $method = mb_strtolower($method);
+        $method = HttpMethod::from($method);
 
         return new self($method, $route);
     }
@@ -32,7 +35,7 @@ class RequestJson extends BaseComponent
     public function getAttributes(): array
     {
         return [
-            'method' => strtolower($this->method),
+            'method' => $this->method->value,
             'route' => $this->route,
             'has_data' => self::$has_data,
         ];

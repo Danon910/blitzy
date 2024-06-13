@@ -13,7 +13,7 @@ class BlitzyProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../config/blitzy.php' => config_path('blitzy.php')
-        ], 'courier-config');
+        ], 'config');
 
         if ($this->app->runningInConsole()) {
             $this->commands([

@@ -10,14 +10,14 @@ class VariableValue extends BaseComponent
 {
     public function __construct(
         private readonly string $name,
-        private readonly string $value,
+        private readonly mixed $value,
     )
     {
     }
 
     public static function make(
         string $name,
-        string $value,
+        mixed $value,
     ): self
     {
         return new self($name, $value);
