@@ -28,7 +28,7 @@ abstract class BaseTestService
     ): IResult
     {
         $namespace = str_replace('\\', '/', $namespace);
-        $tests_folder_path = $this->blitzy_config->getTestsFolderPath();
+        $tests_folder_path = 'tests';
 
         if (!file_exists(base_path("{$tests_folder_path}/{$namespace}"))) {
             mkdir(base_path("{$tests_folder_path}/{$namespace}"), 0777, true);

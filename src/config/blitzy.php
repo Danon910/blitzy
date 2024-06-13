@@ -6,8 +6,6 @@ use Danon910\blitzy\Enums\TestAssertion;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 return [
-    'tests_folder_path' => 'tests',
-
     'types' => [
         'smoke' => [
             'traits' => [

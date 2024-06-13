@@ -10,11 +10,6 @@ use Danon910\blitzy\Entities\TestTypeConfig;
 
 class BlitzyConfig
 {
-    public function getTestsFolderPath(): string
-    {
-        return $this->getConfig(['tests_folder_path'], 'tests');
-    }
-
     public function getType(TestType $name): TestTypeConfig
     {
         $type_config = $this->getConfig(['types', $name->value]);
